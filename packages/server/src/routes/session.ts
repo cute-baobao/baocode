@@ -4,7 +4,8 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import z from "zod";
 import { MODE, ROLE ,MESSAGE_STATUS} from "@baocode/database/enums";
-import { db, messageTable, sessionTable, type Message } from "@baocode/database";
+import { messageTable, sessionTable, type Message } from "@baocode/database";
+import { db } from "@baocode/database/client";
 import { desc, eq } from "drizzle-orm";
 
 const createSessionSchema = z.object({
