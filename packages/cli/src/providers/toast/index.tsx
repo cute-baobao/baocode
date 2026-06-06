@@ -10,9 +10,9 @@ import {
   type ToastOptions,
   type ToastVariant,
 } from "./types";
-import { useTerminalDimensions } from "@opentui/react";
 import { SplitBorderChars } from "../../components/border";
 import { useTheme } from "../theme";
+import { useContentFill } from "../../lib/use-content-fill";
 
 export type ToastContextType = {
   show: (options: ToastOptions) => void;
@@ -77,17 +77,34 @@ type ToastProps = {
 };
 
 function Toast({ currentToast }: ToastProps) {
-  const { width } = useTerminalDimensions();
   const { colors } = useTheme();
 
   if (!currentToast) return null;
+  const paddingLeft = 2;
+  const paddingRight = 2;
+  const paddingTop = 1;
+  const paddingBottom = 1;
 
-  const maxToastWidth = Math.max(1, Math.min(60, width - 6));
-  const contentWidth = currentToast.message
-    .split(/\r?\n/)
-    .reduce((max, line) => Math.max(max, Array.from(line).length), 0);
-  const textWidth = Math.max(1, Math.min(contentWidth, maxToastWidth - 4));
-  const toastWidth = Math.max(1, textWidth + 4);
+  const {
+    lines,
+    textWidth,
+    boxWidth,
+    boxHeight,
+    maxBoxWidth,
+  } = useContentFill({
+    message: currentToast.message,
+    maxWidth: 60,
+    maxHeightRatio: 0.5,
+    outerPadding: 6,
+    borderLeft: 1,
+    borderRight: 1,
+    paddingLeft,
+    paddingRight,
+    paddingTop,
+    paddingBottom,
+    minHeight: 3,
+    useEllipsis: true,
+  });
 
   const variantColors: Record<ToastVariant, string> = {
     success: colors.success,
@@ -106,21 +123,22 @@ function Toast({ currentToast }: ToastProps) {
       alignItems="flex-start"
       top={2}
       right={2}
-      width={toastWidth}
-      maxWidth={maxToastWidth}
-      paddingLeft={2}
-      paddingRight={2}
-      paddingTop={1}
-      paddingBottom={1}
+      width={boxWidth}
+      maxWidth={maxBoxWidth}
+      height={boxHeight}
+      paddingLeft={paddingLeft}
+      paddingRight={paddingRight}
+      paddingTop={paddingTop}
+      paddingBottom={paddingBottom}
       backgroundColor={colors.surface}
       border={["left", "right"]}
       borderColor={borderColor}
       customBorderChars={SplitBorderChars}
     >
       <text fg="#E1E1E1" wrapMode="word" width={textWidth}>
-        {currentToast.message}
+        {lines.join("\n")}
       </text>
     </box>
   );
 }
-0;
+

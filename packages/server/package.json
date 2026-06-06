@@ -10,8 +10,10 @@
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {
+    "@baocode/database": "workspace:*",
     "@baocode/shared": "workspace:*",
     "@hono/zod-validator": "^0.8.0",
+    "drizzle-orm": "^0.45.2",
     "hono": "^4.12.23",
     "zod": "^4.4.3"
   }
