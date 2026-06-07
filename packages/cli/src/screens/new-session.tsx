@@ -8,6 +8,7 @@ import { useToast } from "../providers/toast";
 import { apiClient } from "../lib/api-client";
 import { DEFAULT_CHAT_MODEL_ID } from "@baocode/shared";
 import { getErrorMessage } from "../lib/http-error";
+import { MODE, ROLE } from "@baocode/database/enums";
 
 const newSessionStateSchema = z.object({
   message: z.string().trim().min(1),
@@ -44,9 +45,9 @@ export function NewSession() {
             title: state.message.slice(0, 100),
             cwd: process.cwd(),
             initialMessage: {
-              role: "USER",
+              role: ROLE.USER,
               content: state.message,
-              mode: "BUILD",
+              mode: MODE.BUILD,
               model: DEFAULT_CHAT_MODEL_ID,
             },
           },

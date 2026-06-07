@@ -7,12 +7,17 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "postinstall":"bun run --cwd ../database db:generate && bun run --cwd ../database migrate"
   },
   "dependencies": {
+    "@ai-sdk/deepseek": "^2.0.35",
     "@baocode/database": "workspace:*",
     "@baocode/shared": "workspace:*",
     "@hono/zod-validator": "^0.8.0",
+    "ai": "^6.0.197",
+    "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.12.23",
     "zod": "^4.4.3"

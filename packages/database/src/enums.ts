@@ -1,11 +1,11 @@
-export type Role = "USER" | "ASSISTANT" | "ERROR";
+export type Role = "user" | "assistant" | "error";
 export type Mode = "BUILD" | "PLAN";
 export type MessageStatus = "COMPLETED" | "INTERRUPTED";
 
 export enum ROLE {
-    USER = "USER",
-    ASSISTANT = "ASSISTANT",
-    ERROR = "ERROR",
+    USER = "user",
+    ASSISTANT = "assistant",
+    ERROR = "error",
 }
 
 export enum MODE {

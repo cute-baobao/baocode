@@ -46,7 +46,7 @@ export const chatStreamEventSchema = z.discriminatedUnion("type", [
   }),
   z.object({
     type: z.literal("done"),
-    messageId: z.string(),
+    messageId: z.number(),
     durationMs: z.number(),
   }),
   z.object({
@@ -54,3 +54,5 @@ export const chatStreamEventSchema = z.discriminatedUnion("type", [
     message: z.string(),
   }),
 ]);
+
+export type ChatStreamEvent = z.infer<typeof chatStreamEventSchema>;

@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm/relations";
 import { index, int, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import type { Role, Mode, MessageStatus } from "../enums";
+import type { Role, Mode, MessageStatus, MESSAGE_STATUS, ROLE } from "../enums";
 
 export const sessionTable = sqliteTable("sessions", {
   id: int("id").primaryKey({ autoIncrement: true }),
@@ -16,8 +16,8 @@ export const messageTable = sqliteTable(
     sessionId: int("session_id")
       .references(() => sessionTable.id, { onDelete: "cascade" })
       .notNull(),
-    role: text("role").$type<Role>().notNull(),
-    status: text("status").$type<MessageStatus>().notNull(),
+    role: text("role").$type<ROLE>().notNull(),
+    status: text("status").$type<MESSAGE_STATUS>().notNull(),
     content: text("content").notNull(),
     parts: text("parts"),
     mode: text("mode").$type<Mode>().notNull(),

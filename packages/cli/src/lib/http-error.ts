@@ -16,5 +16,9 @@ export async function getErrorMessage(response: ErrorResponse) {
     );
   } catch {
     // Ignore JSON parsing errors
+    return (
+      response.statusText ||
+      `Request failed with status ${response.status}: ${response.statusText}`
+    );
   }
 }
