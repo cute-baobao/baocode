@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun",
-    "postinstall":"bun run --cwd ../database db:generate && bun run --cwd ../database migrate"
+    "postinstall":"bun run --cwd ../database db:generate && bun run --cwd ../database db:migrate"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^2.0.35",
