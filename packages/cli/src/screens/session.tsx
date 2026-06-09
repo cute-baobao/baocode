@@ -32,7 +32,7 @@ const sessionLocationSchema = z.object({
 
 function ChatMessage({ msg }: { msg: Message }) {
   if (msg.role === ROLE.USER) {
-    return <UserMessage message={msg.content} />;
+    return <UserMessage mode={msg.mode} message={msg.content} />;
   }
 
   if (msg.role === ROLE.ERROR) {

@@ -3,13 +3,16 @@ import { EmptyBorder } from "./border";
 import { StatusBar } from "./status-bar";
 import { CommandMenu } from "./command-menu";
 import { useCallback, useEffect, useRef } from "react";
-import { useRenderer } from "@opentui/react";
+import { useKeyboard, useRenderer } from "@opentui/react";
 import { useCommandMenu } from "./command-menu/use-command-menu";
 import type { Command } from "./command-menu/types";
 import { useToast } from "../providers/toast";
 import { LayerName, useKeyboardLayer } from "../providers/keyboard-layer";
 import { useDialog } from "../providers/dialog";
 import { useTheme } from "../providers/theme";
+import { useNavigate } from "react-router";
+import { usePromptConfig } from "../providers/prompt-config";
+import { MODE } from "@baocode/database/enums";
 
 type Props = {
   onSubmit: (value: string) => void;
@@ -40,6 +43,8 @@ export function InputBar({ onSubmit, disabled }: Props) {
   const { isTopLayer, setResponder } = useKeyboardLayer();
   const dialog = useDialog();
   const { colors } = useTheme();
+  const navigate = useNavigate();
+  const { mode, toggleMode, model, setModel, setMode } = usePromptConfig();
 
   const handleTextareaContentChange = useCallback(() => {
     const textarea = textareaRef.current;
@@ -73,12 +78,16 @@ export function InputBar({ onSubmit, disabled }: Props) {
           },
           toast,
           dialog,
+          navigate,
+          mode,
+          setMode,
+          setModel,
         });
       } else {
         textarea.insertText(command.value + " ");
       }
     },
-    [renderer, toast, dialog],
+    [renderer, toast, dialog, navigate, mode, setMode, setModel],
   );
 
   const handleExecuteCommand = useCallback(() => {
@@ -97,6 +106,15 @@ export function InputBar({ onSubmit, disabled }: Props) {
 
     handleSubmit();
   };
+
+  useKeyboard((key) => {
+    if (disabled) return;
+    if (!isTopLayer(LayerName.Base)) return;
+    if (key.name === "tab") {
+      key.preventDefault();
+      toggleMode();
+    }
+  });
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -125,7 +143,7 @@ export function InputBar({ onSubmit, disabled }: Props) {
     <box width={"100%"} alignItems="center">
       <box
         border={["left"]}
-        borderColor={colors.primary}
+        borderColor={mode === MODE.BUILD ? colors.primary : colors.planMode}
         customBorderChars={{
           ...EmptyBorder,
           vertical: "┃",

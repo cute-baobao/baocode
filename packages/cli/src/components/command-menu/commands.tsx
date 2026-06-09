@@ -1,4 +1,10 @@
-import { ThemeDialogContent } from "../dialogs";
+import { SUPPORTED_CHAT_MODELS } from "@baocode/shared";
+import {
+  SessionsDialogContent,
+  ThemeDialogContent,
+  AgentsDialogContent,
+  ModelsDialogContent,
+} from "../dialogs";
 import type { Command } from "./types";
 
 export const COMMANDS: Command[] = [
@@ -7,9 +13,7 @@ export const COMMANDS: Command[] = [
     description: "Start a new conversation",
     value: "/new",
     action: (ctx) => {
-      ctx.toast.show({
-        message: "Starting a new conversation...",
-      });
+      ctx.navigate("/");
     },
   },
   {
@@ -19,7 +23,12 @@ export const COMMANDS: Command[] = [
     action: (ctx) => {
       ctx.dialog.open({
         title: "Select Mode",
-        children: <text>Agent selection comming soon...</text>,
+        children: (
+          <AgentsDialogContent
+            currentMode={ctx.mode}
+            onSelectMode={ctx.setMode}
+          />
+        ),
       });
     },
   },
@@ -30,7 +39,12 @@ export const COMMANDS: Command[] = [
     action: (ctx) => {
       ctx.dialog.open({
         title: "Select Model",
-        children: <text>Model selection coming soon...</text>,
+        children: (
+          <ModelsDialogContent
+            models={SUPPORTED_CHAT_MODELS.map((model) => model.id)}
+            onSelectModel={ctx.setModel}
+          />
+        ),
       });
     },
   },
@@ -38,7 +52,12 @@ export const COMMANDS: Command[] = [
     name: "sessions",
     description: "Browse past sessions",
     value: "/sessions",
-    action: (ctx) => {},
+    action: (ctx) => {
+      ctx.dialog.open({
+        title: "Sessions",
+        children: <SessionsDialogContent />,
+      });
+    },
   },
   {
     name: "theme",

@@ -1,14 +1,21 @@
+import { MODE, type Mode } from "@baocode/database/enums";
 import { useTheme } from "../../providers/theme";
 
 type Props = {
   message: string;
+  mode?: Mode;
 };
 
-export function UserMessage({ message }: Props) {
+export function UserMessage({ message, mode }: Props) {
   const { colors } = useTheme();
+
   return (
     <box width="100%" alignItems="center">
-      <box border={["left"]} borderColor={colors.primary} width="100%">
+      <box
+        border={["left"]}
+        borderColor={mode === MODE.PLAN ? colors.planMode : colors.primary}
+        width="100%"
+      >
         <box
           justifyContent="center"
           paddingX={2}
