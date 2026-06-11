@@ -31,7 +31,7 @@ export const chatStreamEventSchema = z.discriminatedUnion("type", [
   }),
   z.object({
     type: z.literal("reasoning-delta"),
-    text: messagePartsSchema,
+    text: z.string(),
   }),
   z.object({
     type: z.literal("tool-call"),
@@ -42,7 +42,7 @@ export const chatStreamEventSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("tool-result"),
     toolCallId: z.string(),
-    results: z.string(),
+    result: z.string(),
   }),
   z.object({
     type: z.literal("done"),

@@ -5,19 +5,23 @@ import { apiClient } from "../lib/api-client";
 import z from "zod";
 import {
   DEFAULT_CHAT_MODEL_ID,
-  MessageRole,
-  type SupportedChatModel,
+  messagePartsSchema,
   type SupportedChatModelId,
 } from "@baocode/shared";
 import { BotMessage, ErrorMessage, UserMessage } from "../components/messages";
 import { useToast } from "../providers/toast";
 import { useEffect, useMemo, useState } from "react";
 import { getErrorMessage } from "../lib/http-error";
-import { useChat, type Message } from "../hooks/use-chat";
+import {
+  useChat,
+  type ClientMessagePart,
+  type Message,
+} from "../hooks/use-chat";
 import { MESSAGE_STATUS, ROLE } from "@baocode/database/enums";
 import prettyMs from "pretty-ms";
 import { useKeyboard } from "@opentui/react";
 import { LayerName, useKeyboardLayer } from "../providers/keyboard-layer";
+import { usePromptConfig } from "../providers/prompt-config";
 
 type SessionData = InferResponseType<
   (typeof apiClient.sessions)[":id"]["$get"],
@@ -67,13 +71,23 @@ function mapDbMessage(dbMessages: SessionData["messages"]): Message[] {
       };
     }
 
+    const paresdParts =
+      msg.parts == null
+        ? null
+        : messagePartsSchema.safeParse(JSON.parse(msg.parts));
+    const parts: ClientMessagePart[] = paresdParts?.success
+      ? paresdParts.data.map((p) =>
+          p.type === "tool-call" ? { ...p, status: "done" as const } : p,
+        )
+      : [];
+
     return {
       id: msg.id.toString(),
       role: msg.role,
       content: msg.content,
       model: msg.model as SupportedChatModelId,
       mode: msg.mode,
-      parts: [{ type: "text", text: msg.content }],
+      parts,
       ...(msg.duration !== null ? { duration: prettyMs(msg.duration) } : {}),
       interrupted: msg.status === MESSAGE_STATUS.INTERRUPTED,
     };
@@ -89,6 +103,7 @@ function SessionChat({ session }: { session: SessionData }) {
     initialMessages,
   );
   const { isTopLayer } = useKeyboardLayer();
+  const { mode, model } = usePromptConfig();
 
   useEffect(() => {
     return () => abort();
@@ -110,8 +125,8 @@ function SessionChat({ session }: { session: SessionData }) {
       onSubmit={(text) =>
         submit({
           userText: text,
-          mode: "BUILD",
-          model: DEFAULT_CHAT_MODEL_ID,
+          mode,
+          model,
         })
       }
       interruptible={streaming.status === "streaming"}

@@ -1,17 +1,18 @@
-import { replace, useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useTheme } from "../providers/theme";
 import { useEffect, useMemo, useRef } from "react";
 import { SessionShell } from "../components/session-shell";
-import { BotMessage, UserMessage, ErrorMessage } from "../components/messages";
+import { UserMessage } from "../components/messages";
 import { z } from "zod";
 import { useToast } from "../providers/toast";
 import { apiClient } from "../lib/api-client";
-import { DEFAULT_CHAT_MODEL_ID } from "@baocode/shared";
 import { getErrorMessage } from "../lib/http-error";
 import { MODE, ROLE } from "@baocode/database/enums";
 
 const newSessionStateSchema = z.object({
   message: z.string().trim().min(1),
+  mode: z.enum(MODE),
+  model: z.string(),
 });
 
 export function NewSession() {
@@ -47,8 +48,8 @@ export function NewSession() {
             initialMessage: {
               role: ROLE.USER,
               content: state.message,
-              mode: MODE.BUILD,
-              model: DEFAULT_CHAT_MODEL_ID,
+              mode: state.mode,
+              model: state.model,
             },
           },
         });
@@ -76,11 +77,11 @@ export function NewSession() {
     };
   }, []);
 
-  if(!state) return null
+  if (!state) return null;
 
   return (
     <SessionShell onSubmit={() => {}} inputDisabled loading>
-      <UserMessage message={state.message} />
+      <UserMessage message={state.message} mode={state.mode} />
     </SessionShell>
   );
 }

@@ -56,6 +56,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@ai-sdk/deepseek": "^2.0.35",
+        "@ai-sdk/provider-utils": "^4.0.27",
         "@baocode/database": "workspace:*",
         "@baocode/shared": "workspace:*",
         "@hono/zod-validator": "^0.8.0",
