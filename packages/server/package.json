@@ -9,10 +9,11 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun",
-    "postinstall":"bun run --cwd ../database db:generate && bun run --cwd ../database db:migrate"
+    "postinstall": "bun run --cwd ../database db:generate && bun run --cwd ../database db:migrate"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^2.0.35",
+    "@ai-sdk/provider-utils": "^4.0.27",
     "@baocode/database": "workspace:*",
     "@baocode/shared": "workspace:*",
     "@hono/zod-validator": "^0.8.0",
