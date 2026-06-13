@@ -129,6 +129,7 @@ function SessionChat({ session }: { session: SessionData }) {
           model,
         })
       }
+      inputDisabled={streaming.status === "streaming"}
       interruptible={streaming.status === "streaming"}
       loading={streaming.status === "streaming"}
     >

@@ -4,8 +4,9 @@ import type {
   ClientToolCallPart,
 } from "../../hooks/use-chat";
 import { useTheme } from "../../providers/theme";
-import { Text, TextAttributes } from "@opentui/core";
+import { SyntaxStyle, Text, TextAttributes } from "@opentui/core";
 import { EmptyBorder } from "../border";
+import { useState } from "react";
 
 type Props = {
   parts: ClientMessagePart[];
@@ -64,6 +65,14 @@ export function BotMessage({
   interrupted = false,
 }: Props) {
   const { colors } = useTheme();
+  const [syntaxStyle] = useState(() => {
+    const style = SyntaxStyle.create();
+    style.registerStyle("markup.strong", { bold: true });
+    style.registerStyle("markup.link", { fg: colors.info });
+    style.registerStyle("markup.raw", { fg: colors.success });
+    // ...
+    return style;
+  });
 
   return (
     <box width="100%" alignItems="center">
@@ -114,7 +123,12 @@ export function BotMessage({
             if (part.type === "text") {
               return (
                 <box key={`text-${j}`} paddingX={3} width="100%">
-                  <text>{part.text}</text>
+                  {/* <text>{part.text}</text> */}
+                  <markdown
+                    syntaxStyle={syntaxStyle}
+                    content={part.text}
+                    streaming={streaming}
+                  />
                 </box>
               );
             }

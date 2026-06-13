@@ -13,6 +13,7 @@ export enum LayerName {
   Base = "base",
   Command = "command",
   Dialog = "dialog",
+  Mention = "mention",
 }
 
 type KeyboardLayerContextValue = {
